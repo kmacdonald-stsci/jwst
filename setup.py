@@ -20,7 +20,7 @@ def get_transforms_data():
     return transforms_schemas
 
 
-NAME = 'jwst'
+NAME = 'jwst-test'
 SCRIPTS = [s for s in glob('scripts/*') if basename(s) != '__pycache__']
 PACKAGE_DATA = {
     '': [
