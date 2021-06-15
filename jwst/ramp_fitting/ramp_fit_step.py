@@ -37,8 +37,7 @@ def get_reference_file_subarrays(model, readnoise_model, gain_model, nframes):
     gain_model : instance of gain Model
         gain for all pixels
 
-    nframes : int
-        number of frames averaged per group; from the NFRAMES keyword. Does
+    nframes : int number of frames averaged per group; from the NFRAMES keyword. Does
         not contain the groupgap.
 
     Returns
@@ -136,7 +135,7 @@ def create_integration_model(input_model, integ_info):
     return int_model
 
 
-def create_optional_results_model(opt_info):
+def create_optional_results_model(input_model, opt_info):
     """
     Creates an ImageModel from the computed arrays from ramp_fit.
 
@@ -152,6 +151,9 @@ def create_optional_results_model(opt_info):
     """
     (slope, sigslope, var_poisson, var_rnoise,
         yint, sigyint, pedestal, weights, crmag) = opt_info
+
+    print_opt_info(opt_info)
+
     opt_model = datamodels.RampFitOutputModel(
         slope=slope,
         sigslope=sigslope,
@@ -163,7 +165,28 @@ def create_optional_results_model(opt_info):
         weights=weights,
         crmag=crmag)
 
+    opt_model.meta.filename = input_model.meta.filename
+    opt_model.update(input_model)  # ... and add all keys from input
+
     return opt_model
+
+
+def print_opt_info(opt_info):
+    """
+    Debugging function.
+    """
+    (slope, sigslope, var_poisson, var_rnoise,
+        yint, sigyint, pedestal, weights, crmag) = opt_info
+
+    print(f"slope.shape = {slope.shape}")
+    print(f"sigslope.shape = {sigslope.shape}")
+    print(f"var_poisson.shape = {var_poisson.shape}")
+    print(f"var_rnoise.shape = {var_rnoise.shape}")
+    print(f"yint.shape = {yint.shape}")
+    print(f"sigyint.shape = {sigyint.shape}")
+    print(f"pedestal.shape = {pedestal.shape}")
+    print(f"weights.shape = {weights.shape}")
+    print(f"crmag.shape = {crmag.shape}")
 
 
 class RampFitStep (Step):
@@ -239,7 +262,7 @@ class RampFitStep (Step):
 
         # Save the OLS optional fit product, if it exists
         if opt_info is not None:
-            opt_model = create_optional_results_model(opt_info)
+            opt_model = create_optional_results_model(input_model, opt_info)
             self.save_model(opt_model, 'fitopt', output_file=self.opt_name)
 
         '''
@@ -261,11 +284,17 @@ class RampFitStep (Step):
                     input_model.meta.instrument.lamp_mode == 'IFU'):
 
                 out_model = datamodels.IFUImageModel(out_model)
+        else:
+            out_model = None
+        print(f"out_model = {out_model}")
 
         if integ_info is not None:
             int_model = create_integration_model(input_model, integ_info)
             int_model.meta.bunit_data = 'DN/s'
             int_model.meta.bunit_err = 'DN/s'
             int_model.meta.cal_step.ramp_fit = 'COMPLETE'
+        else:
+            int_model = None
+        print(f"int_model = {int_model}")
 
         return out_model, int_model
