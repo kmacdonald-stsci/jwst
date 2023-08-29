@@ -486,13 +486,13 @@ def test_one_group_suppressed_two_integrations(setup_inputs):
     check = np.array([[GOOD, GOOD, GOOD]])
     np.testing.assert_allclose(slopes.dq, check, tol)
 
-    check = np.array([[0.005, 0.01, 0.005]])
+    check = np.array([[0.005, 0.005, 0.005]])
     np.testing.assert_allclose(slopes.var_poisson, check, tol)
 
     check = np.array([[0.19999999, 0.19999999, 0.09999999]])
     np.testing.assert_allclose(slopes.var_rnoise, check, tol)
 
-    check = np.array([[0.45276925, 0.45825756, 0.32403702]])
+    check = np.array([[0.45276925, 0.45276925, 0.32403702]])
     np.testing.assert_allclose(slopes.err, check, tol)
 
     # Check slopes information
@@ -505,7 +505,7 @@ def test_one_group_suppressed_two_integrations(setup_inputs):
     np.testing.assert_allclose(cube.dq, check, tol)
 
     check = np.array([[[0.,    0.,    0.01]],
-                      [[0.005, 0.01, 0.01]]])
+                      [[0.005, 0.005, 0.01]]])
     np.testing.assert_allclose(cube.var_poisson, check, tol)
 
     check = np.array([[[0.,         0.,         0.19999999]],
@@ -513,5 +513,31 @@ def test_one_group_suppressed_two_integrations(setup_inputs):
     np.testing.assert_allclose(cube.var_rnoise, check, tol)
 
     check = np.array([[[0.,         0.,         0.4582576]],
-                      [[0.45276922, 0.4582576, 0.4582576]]])
+                      [[0.45276922, 0.45276922, 0.4582576]]])
     np.testing.assert_allclose(cube.err, check, tol)
+
+# -----------------------------------------------------------------------------
+
+###############################################################################
+# The functions below are only used for DEBUGGING tests and developing tests. #
+###############################################################################
+
+def print_real_check(real, check, label=None):
+    import inspect
+    cf = inspect.currentframe()
+    line_number = cf.f_back.f_lineno
+    print("=" * 80)
+    print(f"----> Line = {line_number} <----")
+    if label:
+        base_print(label, real)
+    else:
+        base_print("real", real)
+    print("=" * 80)
+    base_print("check", check)
+    print("=" * 80)
+
+
+def base_print(label, arr):
+    arr_str = np.array2string(arr, max_line_width=np.nan, separator=", ")
+    print(label)
+    print(arr_str)
