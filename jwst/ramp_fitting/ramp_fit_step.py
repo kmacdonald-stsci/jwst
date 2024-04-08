@@ -394,7 +394,7 @@ class RampFitStep(Step):
     """
 
     # Prior to 04/26/17, the following were also in the spec above:
-    #      algorithm = option('OLS', 'GLS', default='OLS') # 'OLS' or 'GLS'
+    #      algorithm = option('OLS', 'GLS', 'LIKELY', default='OLS') # 'OLS' or 'GLS' or 'LIKELY'
     #      weighting = option('unweighted', 'optimal', default='unweighted') \
     #      # 'unweighted' or 'optimal'
     # As of 04/26/17, the only allowed algorithm is 'ols', and the
