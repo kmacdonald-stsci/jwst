@@ -60,7 +60,6 @@ repos:
             jwst/guider_cds/.* |
             jwst/imprint/.* |
             jwst/ipc/.* |
-            jwst/jump/.* |
             jwst/lastframe/.* |
             jwst/lib/.* |
             jwst/linearity/.* |
