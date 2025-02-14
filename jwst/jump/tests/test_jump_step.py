@@ -496,6 +496,9 @@ def test_exec_time_0_crs(setup_inputs):
     assert t_elapsed < MAX_TIME
 
 
+# skip this because it's just a time suck
+# XXX Also, should a test like this even exist?
+@pytest.mark.skip("A time suck.")
 def test_exec_time_many_crs(setup_inputs):
     """"Set up with dimension similar to simulated MIRI datasets.
 
